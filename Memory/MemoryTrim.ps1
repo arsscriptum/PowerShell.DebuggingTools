@@ -281,9 +281,6 @@ function Get-ProcessMemoryUsage
         [array]$prcs = Get-Process "$ProcessName"
 
         if($prcs -eq $Null) { throw "No Such Process" }
-        #"Write-Host "===============================================================================" -f DarkRed
-        #Write-Host "MEMORY USAGE FOR $ProcessName" -f DarkYellow;
-        #$Data = $Process | Group-Object -Property ProcessName | Format-Table Name, Count, @{n='Mem (KB)';e={'{0:N0}' -f (($_.Group|Measure-Object WorkingSet -Sum).Sum / 1KB)};a='right'} -AutoSize
         $NumProcess =$prcs.Length
         $MemoryBytes = $prcs | Group-Object -Property ProcessName | % {  (($_.Group|Measure-Object WorkingSet -Sum).Sum) }
 
@@ -301,3 +298,8 @@ function Get-ProcessMemoryUsage
     }
 }
  
+
+ function Invoke-FullCollection {
+    [System.GC]::GetTotalMemory('forcefullcollection') | Out-Null
+    [System.GC]::GetTotalMemory($true) | out-null
+}
